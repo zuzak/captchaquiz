@@ -32,3 +32,7 @@ The maximum size of the numbers in the sums is governed by the `$difficulty` var
 Problems posed in the math question type are designed to be simple. An attempt has been 
 made to filter out more complicated sums: no division question should result in a 
 non-integer, for example. Subtraction questions may still result in negative answers.
+
+#### alphabet
+The alphabet question type contains one question: it asks the user to type the *n*th 
+letter of the Roman alphabet. The answers are case insensitive.

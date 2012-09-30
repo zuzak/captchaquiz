@@ -4,10 +4,7 @@ use warnings;
 use Switch; # not sure what this does, but http://perldoc.perl.org/Switch.html seems to need it
 use Term::ANSIColor; # http://perldoc.perl.org/Term/ANSIColor.html
 
-###################
-## CONFIGURATION ##
-###################
-# config
+# initialise configuration variables and their defaults
 my $numquestions = 5; # number of questions the user is prompted
 my $quota = 4;        # number of questions the user must ask correctly
 my @questiontypes = ("alphabet"); # question types used. Valid options: math alphabet
@@ -22,6 +19,9 @@ my @times = ("times", "multiplied by", "by");
 my @divide = ("divided by", "divided into", "split between");
 
 ##################
+
+#require "config.pl";
+
 
 if ($numquestions lt $quota) { # check if the config is sane
 	die "Too many questions, not enough answers!";
@@ -38,7 +38,7 @@ sub returnOrdinal {
 	my $number1 = substr($number, -1); # get last char
 	my $number2 = substr($number, -2);
 	if (($number2 == 11) || ($number2 == 12) || ($number2 == 13)) {
-	 $ord = "xx";
+	 $ord = "th";
 	} else {
 		switch ($number1){
 			case "1" {
@@ -146,7 +146,7 @@ while ($loop == 1) { # infinite loop D:
 			$index += 1;
 			my $ordinal = returnOrdinal($index);
 						
-			print "What is the $indexordinal letter of the alphabet?\n";
+			print "What is the $index$ordinal letter of the alphabet?\n";
 			
 		} else {
 			die "Invalid question type found; please check your configuration!";
