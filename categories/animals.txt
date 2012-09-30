@@ -1,0 +1,10 @@
+sheep
+chicken
+pig
+cow
+goose
+duck
+goat
+horse
+bull
+donkey
