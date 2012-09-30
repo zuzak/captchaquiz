@@ -1,3 +1,8 @@
+# simplehuman.pl
+# this file contains a very simple version of the captcha quiz.
+# its purpose is to showcase the basic functionality as set in the design document.
+# a more complex (and possibly bloated) version can be found at areyouhuman.pl.
+
 #!/usr/bin/perl
 use strict;
 use warnings;
