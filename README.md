@@ -10,8 +10,8 @@ correct, the user is determined to be human.
 
 Configuration
 -------------
-The program is designed to be semi-configurable. To configure this program, edit 
-config.pl. If a variable is deleted from config.pl, the default will be used.
+The program is designed to be semi-configurable by changing variables near the start of 
+areyouhuman.pl.
 
 ### Questions
 One can edit the number of questions a user is prompted by editing the `$numquestions` 
