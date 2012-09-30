@@ -68,6 +68,7 @@ Copyright
 > DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 > OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+Attribution that needs to be put somewhere
+------------------------------------------
 
-
-http://forums.devshed.com/perl-programming-6/using-perl-to-list-files-in-a-directory-344889.html
+* [Directory to array](http://forums.devshed.com/perl-programming-6/using-perl-to-list-files-in-a-directory-344889.html)
