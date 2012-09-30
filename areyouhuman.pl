@@ -7,7 +7,7 @@ use Term::ANSIColor; # http://perldoc.perl.org/Term/ANSIColor.html
 # initialise configuration variables and their defaults
 my $numquestions = 5; # number of questions the user is prompted
 my $quota = 4;        # number of questions the user must ask correctly
-my @questiontypes = ("alphabet"); # question types used. Valid options: math alphabet
+my @questiontypes = ("odd"); # question types used. Valid options: math alphabet odd
 my $difficulty = 10; # defines the maximum size of math questions
 
 my $debug = 1; # turn on to view answers(!)
@@ -136,7 +136,7 @@ while ($loop == 1) { # infinite loop D:
 			print "What is $number1 $humanoperand $number2?";
 			print "\n";
 		
-		} elsif ($questiontype = "alphabet") {
+		} elsif ($questiontype eq "alphabet") {
 			my $alph  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			#my $alph2 = "abcdefghijklmnopqrstuvwxyz";
 			my @alphabet = split(//,$alph); # guessing regex here
@@ -147,6 +147,17 @@ while ($loop == 1) { # infinite loop D:
 			my $ordinal = returnOrdinal($index);
 						
 			print "What is the $index$ordinal letter of the alphabet?\n";
+		} elsif ($questiontype eq "odd") {
+			# odd one out	
+			my @categories;
+			opendir(DIR,"categories"); # unsure what DIR is
+			@categories = readdir(DIR);
+
+			my $randomcat;
+
+			$randomcat = $categories[int(rand(@categories))];
+
+			$correct = "placeholder";
 			
 		} else {
 			die "Invalid question type found; please check your configuration!";
