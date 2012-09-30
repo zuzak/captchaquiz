@@ -8,6 +8,10 @@ This program attempts to determine if a user is a human or an automated process 
 It does so by asking the user several questions. If a certain number of questions are 
 correct, the user is determined to be human.
 
+Dependencies
+-----------
+* Requires Switch, which will be removed from the Perl core distribution in the next major release.
+
 Configuration
 -------------
 The program is designed to be semi-configurable by changing variables near the start of 
@@ -37,6 +41,14 @@ non-integer, for example. Subtraction questions may still result in negative ans
 The alphabet question type contains one question: it asks the user to type the *n*th 
 letter of the Roman alphabet. The answers are case insensitive.
 
+#### odd
+The odd one out question type prompts the user with several different words. The user
+must select the word that is the 'odd one out' in order to answer the question correctly.
+
+This question type is easily configurable, by editing the contents of the `categories` directory.
+Each text file should contain a list of words in a category, one on each line.
+
+The number of words given to the user to digest is determined from the `$difficulty` variable.
 Copyright
 ---------
 > Copyright (c) 2012 Douglas Gardner
@@ -55,3 +67,7 @@ Copyright
 > NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
 > DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 > OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+http://forums.devshed.com/perl-programming-6/using-perl-to-list-files-in-a-directory-344889.html

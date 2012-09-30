@@ -6,5 +6,7 @@ melon
 grapefruit
 pineapple
 watermelon
-
-
+plum
+pear
+lime
+lemon
