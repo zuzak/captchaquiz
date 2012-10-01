@@ -7,7 +7,7 @@ use Term::ANSIColor; # http://perldoc.perl.org/Term/ANSIColor.html
 # initialise configuration variables and their defaults
 my $numquestions = 5; # number of questions the user is prompted
 my $quota = 4;        # number of questions the user must ask correctly
-my @questiontypes = ("math", "alphabet"); # question types used
+my @questiontypes = ("odd"); # question types used [math alphabet odd]
 my $difficulty;
 $difficulty = 10; # defines the maximum size of math questions
 
@@ -23,6 +23,7 @@ my @divide = ("divided by", "divided into", "split between");
 
 #require "config.pl";
 
+srand; # may the odds be forever in your favour
 
 if ($numquestions lt $quota) { # check if the config is sane
 	die "Too many questions, not enough answers!";
@@ -59,6 +60,33 @@ sub returnOrdinal {
 	$ord
 }
 
+sub debug {
+	# display a debug message
+	if ($debug ne 0){
+		print color "yellow";
+		print $_[0];
+		print color "reset";
+	}
+}
+sub fileArray {
+	my $file = $_[0];
+	my $line = 0;
+	my @dict;
+
+	open(HANDLE, $file) ||	die("$file not found"); # cake or death
+	
+	my $nextword = <HANDLE>; 
+
+	while ($nextword) {
+#		chomp($nextword); # remove \n
+		$dict[$line] = $nextword;
+		$line += 1;
+		$nextword = <HANDLE>;
+	}
+	@dict;	
+
+}
+
 # introduction
 print "Hello, please prove that you are not a computer program.\n";
 print "Prove this by correctly answering $quota out of $numquestions correctly.\n\n";
@@ -71,11 +99,7 @@ my $success;
 my $questiontype;
 $corrans = 0;
 
-if ($debug != 0){
-	print color "yellow";
-	print "*** DEBUG MODE ON ***\n\n\n";
-	print color "reset";
-}
+debug("*** DEBUG MODE ON ***\n\n\n");
 while (1) { # infinite loop D:
 	$questionnumber = 0;
 	$success = 0;
@@ -157,7 +181,44 @@ while (1) { # infinite loop D:
 
 			$category1 = $categories[int(rand(@categories))];
 			$category2 = $categories[int(rand(@categories))];
-			$correct = "placeholder";
+
+			my @cat1 = fileArray("categories/".$category1);
+			my @cat2 = fileArray("categories/".$category2);
+			die(@cat2);
+			my @printwords;
+			
+			my $wordcount = 0;
+			my $allowed = 1;
+			while ($wordcount < ($difficulty / 2)) {
+				my $word = $cat1[int(rand(@cat1))]; # get random word
+			#	print $word;
+				# check if dupe
+				my $count2;
+				
+				for ($count2 = 0; $count2 >= @printwords; $count2--) {
+					if ($word eq $printwords[$count2]){
+						$allowed = 0;
+						last;
+					}
+				}
+
+				if ($allowed == 1) {
+					push(@printwords,$word);
+				}
+			}
+			$correct = $cat2[int(rand(@cat2))];
+
+			push(@printwords,$correct); # add the odd one out to the pile
+
+			print "Which is the odd one out: ";
+			
+			my $option;
+			foreach $option (@printwords) {
+				print $option." ";
+				debug("XXX");
+			}
+			
+
 
 
 			
@@ -165,11 +226,7 @@ while (1) { # infinite loop D:
 			die "Invalid question type found; please check your configuration!";
 		}
 		
-		if ($debug != 0) {
-			print color "blue";
-			print "[$questiontype: $correct]";
-			print color "reset";
-		}
+		debug("[$questiontype: $correct]");
 		my $input = <STDIN>;
 		chomp($input);
 		$input = uc($input); # for alphabet stuff

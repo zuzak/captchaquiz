@@ -74,3 +74,4 @@ Attribution that needs to be put somewhere
 ------------------------------------------
 
 * [Directory to array](http://forums.devshed.com/perl-programming-6/using-perl-to-list-files-in-a-directory-344889.html)
+* [Random line in file](http://docstore.mik.ua/orelly/perl3/cookbook/ch08_07.htm)
