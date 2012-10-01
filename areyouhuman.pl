@@ -11,7 +11,7 @@ my @questiontypes = ("odd"); # question types used [math alphabet odd]
 my $difficulty;
 $difficulty = 10; # defines the maximum size of math questions
 
-my $debug = 1; # turn on to view answers(!)
+my $debug = 0; # turn on to view answers(!)
 
 # language variables
 my @plus = ("plus", "added to", "+", "more than");
@@ -78,11 +78,16 @@ sub fileArray {
 	my $nextword = <HANDLE>; 
 
 	while ($nextword) {
-#		chomp($nextword); # remove \n
-		$dict[$line] = $nextword;
-		$line += 1;
-		$nextword = <HANDLE>;
+		chomp($nextword); # remove \n
+		if (substr($nextword,0,2) ne "//") { # comments
+			$dict[$line] = $nextword;
+			debug($nextword.", ");
+			$line += 1;
+			$nextword = <HANDLE>;
+		}
 	}
+	close(HANDLE);
+	
 	@dict;	
 
 }
@@ -99,6 +104,9 @@ my $success;
 my $questiontype;
 $corrans = 0;
 
+$|=1; # turn buffers on whilst testing
+
+
 debug("*** DEBUG MODE ON ***\n\n\n");
 while (1) { # infinite loop D:
 	$questionnumber = 0;
@@ -107,7 +115,9 @@ while (1) { # infinite loop D:
 	while ($questionnumber lt $numquestions) {
 		$questionnumber += 1;
 		print "Verification question $questionnumber/$numquestions\n";
+
 		$questiontype = $questiontypes[rand(@questiontypes)];
+
 		if ($questiontype eq "math"){
 			my $number1 = random();
 			my $number2 = random();
@@ -161,9 +171,7 @@ while (1) { # infinite loop D:
 		
 		} elsif ($questiontype eq "alphabet") {
 			my $alph  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-			#my $alph2 = "abcdefghijklmnopqrstuvwxyz";
 			my @alphabet = split(//,$alph); # guessing regex here
-			#my @alphabet = ('a','b','c','d','e','f','g');
 			my $index = int(rand(@alphabet));
 			$correct = $alphabet[$index];
 			$index += 1;
@@ -173,63 +181,67 @@ while (1) { # infinite loop D:
 		} elsif ($questiontype eq "odd") {
 			# odd one out	
 			my @categories;
-			opendir(DIR,"categories"); # unsure what DIR is
+			opendir(DIR,"categories");
+		
 			@categories = readdir(DIR);
-
-			my $category1;
-			my $category2;
-
-			$category1 = $categories[int(rand(@categories))];
-			$category2 = $categories[int(rand(@categories))];
+			closedir(DIR);
+		
+			my $category1 = "foo";
+			my $category2 = "foo";
+			my $allowable = 0;
+			while ($allowable == 0) {
+				$allowable = 1;
+				$category1 = $categories[int(rand(@categories))];
+				$category2 = $categories[int(rand(@categories))];
+				if ($category1 eq $category2) { # impossible question!
+					$allowable = 0;
+				} elsif(substr($category1,0,1) eq ".") {  # disallow things like . and ..
+					$allowable = 0;
+				} elsif(substr($category2,0,1) eq ".") { # couldn't get || working properly
+					$allowable = 0;
+				}
+			}
 
 			my @cat1 = fileArray("categories/".$category1);
 			my @cat2 = fileArray("categories/".$category2);
-			die(@cat2);
+				
 			my @printwords;
 			
 			my $wordcount = 0;
 			my $allowed = 1;
-			while ($wordcount < ($difficulty / 2)) {
+			while ($wordcount ne 5) {
 				my $word = $cat1[int(rand(@cat1))]; # get random word
-			#	print $word;
-				# check if dupe
-				my $count2;
-				
-				for ($count2 = 0; $count2 >= @printwords; $count2--) {
-					if ($word eq $printwords[$count2]){
-						$allowed = 0;
-						last;
-					}
-				}
-
-				if ($allowed == 1) {
-					push(@printwords,$word);
-				}
+				push(@printwords,$word);
+				$wordcount++;
 			}
 			$correct = $cat2[int(rand(@cat2))];
-
+			debug("$category1 - $category2");
 			push(@printwords,$correct); # add the odd one out to the pile
-
-			print "Which is the odd one out: ";
+			
+			print "Which is the odd one out? <|";
+		#	my $option;
+		#	foreach $option (@printwords) {
+		#		print $option." | ";
+		#	}
 			
 			my $option;
 			foreach $option (@printwords) {
-				print $option." ";
-				debug("XXX");
+				print " $option |";
 			}
-			
-
-
-
+			print "> \n";
 			
 		} else {
 			die "Invalid question type found; please check your configuration!";
 		}
 		
-		debug("[$questiontype: $correct]");
+		#debug("[$questiontype: $correct]");
+		print color "magenta";
+		print ">>>";
+		print color "reset";
 		my $input = <STDIN>;
 		chomp($input);
 		$input = uc($input); # for alphabet stuff
+		$correct = uc($correct); 
 		if ($input eq $correct) {
 			$corrans += 1;
 			print color "green";
@@ -272,4 +284,3 @@ while (1) { # infinite loop D:
 }
 
 die "The end was reached!"; # there's an infinite loop, this should never happen
-
