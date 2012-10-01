@@ -8,6 +8,8 @@ This program attempts to determine if a user is a human or an automated process 
 It does so by asking the user several questions. If a certain number of questions are 
 correct, the user is determined to be human.
 
+To end the program, send `^c`.
+
 Dependencies
 -----------
 * Requires Switch, which will be removed from the Perl core distribution in the next major release.

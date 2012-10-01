@@ -7,8 +7,9 @@ use Term::ANSIColor; # http://perldoc.perl.org/Term/ANSIColor.html
 # initialise configuration variables and their defaults
 my $numquestions = 5; # number of questions the user is prompted
 my $quota = 4;        # number of questions the user must ask correctly
-my @questiontypes = ("odd"); # question types used. Valid options: math alphabet odd
-my $difficulty = 10; # defines the maximum size of math questions
+my @questiontypes = ("math", "alphabet"); # question types used
+my $difficulty;
+$difficulty = 10; # defines the maximum size of math questions
 
 my $debug = 1; # turn on to view answers(!)
 
@@ -153,11 +154,14 @@ while ($loop == 1) { # infinite loop D:
 			opendir(DIR,"categories"); # unsure what DIR is
 			@categories = readdir(DIR);
 
-			my $randomcat;
+			my $category1;
+			my $category2;
 
-			$randomcat = $categories[int(rand(@categories))];
-
+			$category1 = $categories[int(rand(@categories))];
+			$category2 = $categories[int(rand(@categories))];
 			$correct = "placeholder";
+
+
 			
 		} else {
 			die "Invalid question type found; please check your configuration!";
