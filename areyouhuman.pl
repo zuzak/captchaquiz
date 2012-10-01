@@ -67,18 +67,16 @@ print "Prove this by correctly answering $quota out of $numquestions correctly.\
 my $corrans;
 my $correct;
 my $questionnumber;
-my $loop;
 my $success;
 my $questiontype;
 $corrans = 0;
-$loop = 1;
 
 if ($debug != 0){
 	print color "yellow";
 	print "*** DEBUG MODE ON ***\n\n\n";
 	print color "reset";
 }
-while ($loop == 1) { # infinite loop D:
+while (1) { # infinite loop D:
 	$questionnumber = 0;
 	$success = 0;
 	$corrans = 0;
