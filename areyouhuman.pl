@@ -209,7 +209,7 @@ while (1) { # infinite loop D:
 			
 			my $wordcount = 0;
 			my $allowed = 1;
-			while ($wordcount ne 5) {
+			while ($wordcount ne int($difficulty/2)) {
 				my $word = $cat1[int(rand(@cat1))]; # get random word
 				push(@printwords,$word);
 				$wordcount++;
