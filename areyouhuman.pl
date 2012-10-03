@@ -7,11 +7,11 @@ use Term::ANSIColor; # http://perldoc.perl.org/Term/ANSIColor.html
 # initialise configuration variables and their defaults
 my $numquestions = 5; # number of questions the user is prompted
 my $quota = 4;        # number of questions the user must ask correctly
-my @questiontypes = ("odd"); # question types used [math alphabet odd]
+my @questiontypes = ("math"); # question types used [math alphabet odd]
 my $difficulty;
 $difficulty = 10; # defines the maximum size of math questions
 
-my $debug = 0; # turn on to view answers(!)
+my $debug = 1; # turn on to view answers(!)
 
 # language variables
 my @plus = ("plus", "added to", "+", "more than");
@@ -81,7 +81,6 @@ sub fileArray {
 		chomp($nextword); # remove \n
 		if (substr($nextword,0,2) ne "//") { # comments
 			$dict[$line] = $nextword;
-			debug($nextword.", ");
 			$line += 1;
 			$nextword = <HANDLE>;
 		}
@@ -117,13 +116,17 @@ while (1) { # infinite loop D:
 		print "Verification question $questionnumber/$numquestions\n";
 
 		$questiontype = $questiontypes[rand(@questiontypes)];
-
+		debug($questiontype);
 		if ($questiontype eq "math"){
+			debug("\nQuestion type selected! ");
 			my $number1 = random();
 			my $number2 = random();
-	
+			debug($number1." | ".$number2."\n");
 			my @operands = ("+","-","*","/");
-			my $operand = $operands[rand(@operands)];
+			my $rand1 = int(rand(@operands));
+			debug("rand: $rand1\n");
+			my $operand = $operands[$rand1];
+			debug($operand."\n");
 			my $humanoperand;
 			switch ($operand) { # there's bound to be a better way to do this
 				case "+" {
@@ -131,15 +134,15 @@ while (1) { # infinite loop D:
 					$humanoperand = $plus[rand(@plus)];
 				}
 				case "-" {
-					my $validnum = 0;
-					while ($validnum != 1){
-						if ($number1 gt $number2) {
-							$validnum = 1;
-							last;
-						} else {
-							$number1 = random();
-						}
-					}
+				#	my $validnum = 0;
+				#	while ($validnum != 1){
+				#		if ($number1 gt $number2) {
+				#			$validnum = 1;
+				#			last;
+				#		} else {
+				#			$number1 = random();
+				#		}
+				#	}
 						
 					$correct = $number1 - $number2;
 					$humanoperand = $minus[rand(@minus)];
@@ -163,9 +166,11 @@ while (1) { # infinite loop D:
 				}
 				else {
 					# shouldn't happen
+					debug("AAAAGH!");
 					die "Unknown operand picked!";
 				}
 			}	
+			debug($operand);
 			print "What is $number1 $humanoperand $number2?";
 			print "\n";
 		

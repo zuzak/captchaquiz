@@ -1,0 +1,24 @@
+english
+french
+german
+spanish
+russian
+polish
+flemish
+welsh
+latin
+greek
+esperanto
+cantonese
+mandarin
+korean
+japanese
+tok pisin
+norwegian
+finnish
+swedish
+dutch
+swahilli
+afrikaans
+
+
