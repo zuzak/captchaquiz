@@ -20,5 +20,4 @@ swedish
 dutch
 swahilli
 afrikaans
-
-
+//

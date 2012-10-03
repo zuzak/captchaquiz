@@ -1,27 +1,22 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Switch; # not sure what this does, but http://perldoc.perl.org/Switch.html seems to need it
+use Switch; # http://perldoc.perl.org/Switch.html
 use Term::ANSIColor; # http://perldoc.perl.org/Term/ANSIColor.html
 
 # initialise configuration variables and their defaults
 my $numquestions = 5; # number of questions the user is prompted
 my $quota = 4;        # number of questions the user must ask correctly
-my @questiontypes = ("math"); # question types used [math alphabet odd]
-my $difficulty;
-$difficulty = 10; # defines the maximum size of math questions
+my @questiontypes = ("math","alphabet","odd"); # question types used [math alphabet odd]
+my $difficulty = 5; # defines the maximum size of math questions
 
-my $debug = 1; # turn on to view answers(!)
+my $debug = 0; # turn on to view answers(!)
 
 # language variables
 my @plus = ("plus", "added to", "+", "more than");
 my @minus = ("minus", "take", "subtracted by", "less");
 my @times = ("times", "multiplied by", "by");
 my @divide = ("divided by", "divided into", "split between");
-
-##################
-
-#require "config.pl";
 
 srand; # may the odds be forever in your favour
 
@@ -68,7 +63,7 @@ sub debug {
 		print color "reset";
 	}
 }
-sub fileArray {
+sub fileArray { # sticks all the shizzle in a file into an array
 	my $file = $_[0];
 	my $line = 0;
 	my @dict;
@@ -106,13 +101,15 @@ $corrans = 0;
 $|=1; # turn buffers on whilst testing
 
 
-debug("*** DEBUG MODE ON ***\n\n\n");
+debug("*** DEBUG MODE ON ***\n\n\n"); # announce debug mode if it's on
+
 while (1) { # infinite loop D:
 	$questionnumber = 0;
 	$success = 0;
 	$corrans = 0;
-	while ($questionnumber lt $numquestions) {
+	while ($questionnumber < $numquestions) {
 		$questionnumber += 1;
+		my $question = "<No question defined!>";
 		print "Verification question $questionnumber/$numquestions\n";
 
 		$questiontype = $questiontypes[rand(@questiontypes)];
@@ -122,34 +119,27 @@ while (1) { # infinite loop D:
 			my $number1 = random();
 			my $number2 = random();
 			debug($number1." | ".$number2."\n");
-			my @operands = ("+","-","*","/");
-			my $rand1 = int(rand(@operands));
+			my @operators = ("+","-","*","/");
+			my $rand1 = int(rand(@operators));
 			debug("rand: $rand1\n");
-			my $operand = $operands[$rand1];
-			debug($operand."\n");
-			my $humanoperand;
-			switch ($operand) { # there's bound to be a better way to do this
+			my $operator = $operators[$rand1];
+			debug($operator."\n");
+			my $humanoperator;
+			switch ($operator) { # there's bound to be a better way to do this
 				case "+" {
 					$correct = $number1 + $number2;
-					$humanoperand = $plus[rand(@plus)];
+					$humanoperator = $plus[rand(@plus)];
 				}
 				case "-" {
-				#	my $validnum = 0;
-				#	while ($validnum != 1){
-				#		if ($number1 gt $number2) {
-				#			$validnum = 1;
-				#			last;
-				#		} else {
-				#			$number1 = random();
-				#		}
-				#	}
-						
+					while ($number1 < $number2) { # if the answer is -ve, reroll
+						$number1 = random();
+					}
 					$correct = $number1 - $number2;
-					$humanoperand = $minus[rand(@minus)];
+					$humanoperator = $minus[rand(@minus)];
 				}
 				case "*" {
 					$correct = $number1 * $number2;
-					$humanoperand = $times[rand(@times)];
+					$humanoperator = $times[rand(@times)];
 				}
 				case "/" {
 					my $validnum = 0;
@@ -162,17 +152,16 @@ while (1) { # infinite loop D:
 						}
 					}
 					$correct = $number1 / $number2;
-					$humanoperand = $divide[rand(@divide)];
+					$humanoperator = $divide[rand(@divide)];
 				}
 				else {
 					# shouldn't happen
 					debug("AAAAGH!");
-					die "Unknown operand picked!";
+					die "Unknown operator picked!";
 				}
 			}	
-			debug($operand);
-			print "What is $number1 $humanoperand $number2?";
-			print "\n";
+			debug($operator);
+			$question = "What is $number1 $humanoperator $number2?\n";
 		
 		} elsif ($questiontype eq "alphabet") {
 			my $alph  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -182,7 +171,7 @@ while (1) { # infinite loop D:
 			$index += 1;
 			my $ordinal = returnOrdinal($index);
 						
-			print "What is the $index$ordinal letter of the alphabet?\n";
+			$question = "What is the $index$ordinal letter of the alphabet?\n";
 		} elsif ($questiontype eq "odd") {
 			# odd one out	
 			my @categories;
@@ -223,23 +212,19 @@ while (1) { # infinite loop D:
 			debug("$category1 - $category2");
 			push(@printwords,$correct); # add the odd one out to the pile
 			
-			print "Which is the odd one out? <|";
-		#	my $option;
-		#	foreach $option (@printwords) {
-		#		print $option." | ";
-		#	}
+			$question = "Which is the odd one out? <|";
 			
 			my $option;
 			foreach $option (@printwords) {
-				print " $option |";
+				$question = $question." $option |";
 			}
-			print "> \n";
+			$question = $question."> \n";
 			
 		} else {
 			die "Invalid question type found; please check your configuration!";
 		}
 		
-		#debug("[$questiontype: $correct]");
+		print $question;
 		print color "magenta";
 		print ">>>";
 		print color "reset";
