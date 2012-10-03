@@ -1,0 +1,16 @@
+// star wars worlds
+aalderan
+naboo
+yavin iv
+tatooine
+kashyyyk
+bespin
+dagobah
+coruscant
+endor
+geonosis
+hoth
+kamino
+mustafar
+mygeeto
+//
