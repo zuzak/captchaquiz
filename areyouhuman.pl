@@ -115,16 +115,15 @@ while (1) { # infinite loop D:
 		$questiontype = $questiontypes[rand(@questiontypes)];
 		debug($questiontype);
 		if ($questiontype eq "math"){
-			debug("\nQuestion type selected! ");
 			my $number1 = random();
 			my $number2 = random();
-			debug($number1." | ".$number2."\n");
-			my @operators = ("+","-","*","/");
-			my $rand1 = int(rand(@operators));
-			debug("rand: $rand1\n");
-			my $operator = $operators[$rand1];
-			debug($operator."\n");
 			my $humanoperator;
+			
+			my @operators = ("+","-","*","/");
+			
+			my $rand1 = int(rand(@operators));
+			my $operator = $operators[$rand1];
+						
 			switch ($operator) { # there's bound to be a better way to do this
 				case "+" {
 					$correct = $number1 + $number2;
@@ -144,11 +143,12 @@ while (1) { # infinite loop D:
 				case "/" {
 					my $validnum = 0;
 					while ($validnum != 1) {
+						# filter out more complex maths
 						if ((($number1 % $number2) == 0) && ($number1 ne 0) && ($number1 ne $number2)) {
 							$validnum = 1;
 							last;
 						} else {
-							$number1 = random();
+							$number1 = random(); # if complex, reroll
 						}
 					}
 					$correct = $number1 / $number2;
@@ -156,11 +156,9 @@ while (1) { # infinite loop D:
 				}
 				else {
 					# shouldn't happen
-					debug("AAAAGH!");
 					die "Unknown operator picked!";
 				}
 			}	
-			debug($operator);
 			$question = "What is $number1 $humanoperator $number2?\n";
 		
 		} elsif ($questiontype eq "alphabet") {
