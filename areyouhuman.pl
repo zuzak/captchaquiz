@@ -3,14 +3,14 @@ use strict;
 use warnings;
 use Switch; # http://perldoc.perl.org/Switch.html
 use Term::ANSIColor; # http://perldoc.perl.org/Term/ANSIColor.html
-
+use List::Util qw(shuffle); # http://www.perlhowto.com/arrange_the_elements_of_an_array_in_random_order
 # initialise configuration variables and their defaults
 my $numquestions = 5; # number of questions the user is prompted
 my $quota = 4;        # number of questions the user must ask correctly
 my @questiontypes = ("math","alphabet","odd"); # question types used [math alphabet odd]
 my $difficulty = 5; # defines the maximum size of math questions
 
-my $debug = 0; # turn on to view answers(!)
+my $debug = 1; # turn on to view answers(!)
 
 # language variables
 my @plus = ("plus", "added to", "+", "more than");
@@ -57,14 +57,15 @@ sub returnOrdinal {
 
 sub debug {
 	# display a debug message
-	if ($debug ne 0){
+	if ($debug ge $_[0]){
 		print color "yellow";
-		print $_[0];
+		print $_[1];
 		print color "reset";
 	}
 }
 sub fileArray { # sticks all the shizzle in a file into an array
 	my $file = $_[0];
+	debug(2,"\nOpening $file...");
 	my $line = 0;
 	my @dict;
 
@@ -74,14 +75,15 @@ sub fileArray { # sticks all the shizzle in a file into an array
 
 	while ($nextword) {
 		chomp($nextword); # remove \n
+		debug(2,"\nReading $nextword...");
 		if (substr($nextword,0,2) ne "//") { # comments
 			$dict[$line] = $nextword;
 			$line += 1;
-			$nextword = <HANDLE>;
 		}
+		$nextword = <HANDLE>;
 	}
 	close(HANDLE);
-	
+	debug(2,"\n$file closed..");
 	@dict;	
 
 }
@@ -101,7 +103,7 @@ $corrans = 0;
 $|=1; # turn buffers on whilst testing
 
 
-debug("*** DEBUG MODE ON ***\n\n\n"); # announce debug mode if it's on
+debug(1,"*** DEBUG MODE ON ***\n\n\n"); # announce debug mode if it's on
 
 while (1) { # infinite loop D:
 	$questionnumber = 0;
@@ -113,7 +115,7 @@ while (1) { # infinite loop D:
 		print "Verification question $questionnumber/$numquestions\n";
 
 		$questiontype = $questiontypes[rand(@questiontypes)];
-		debug($questiontype);
+		debug(1,$questiontype.": ");
 		if ($questiontype eq "math"){
 			my $number1 = random();
 			my $number2 = random();
@@ -181,22 +183,30 @@ while (1) { # infinite loop D:
 			my $category1 = "foo";
 			my $category2 = "foo";
 			my $allowable = 0;
+			$category1 = $categories[int(rand(@categories))];
+			$category2 = $categories[int(rand(@categories))];
 			while ($allowable == 0) {
 				$allowable = 1;
-				$category1 = $categories[int(rand(@categories))];
-				$category2 = $categories[int(rand(@categories))];
+				debug(2,"1: $category1 | 2: $category2");
 				if ($category1 eq $category2) { # impossible question!
 					$allowable = 0;
+					debug(2,"\nSame category");
+					$category1 = $categories[int(rand(@categories))];
 				} elsif(substr($category1,0,1) eq ".") {  # disallow things like . and ..
 					$allowable = 0;
+					debug(2,"\nCat1 is dotfile");
+					$category1 = $categories[int(rand(@categories))];
 				} elsif(substr($category2,0,1) eq ".") { # couldn't get || working properly
 					$allowable = 0;
+					$category2 = $categories[int(rand(@categories))];
+				#debug(1,"\nCat2 is dotfile"
 				}
+				debug(2,"!");
 			}
-
+			debug(2,"*");
 			my @cat1 = fileArray("categories/".$category1);
 			my @cat2 = fileArray("categories/".$category2);
-				
+			debug(2,"\n C1: @cat1; C2: @cat2");
 			my @printwords;
 			
 			my $wordcount = 0;
@@ -207,9 +217,10 @@ while (1) { # infinite loop D:
 				$wordcount++;
 			}
 			$correct = $cat2[int(rand(@cat2))];
-			debug("$category1 - $category2");
+			debug(1,"$category1 - $category2");
 			push(@printwords,$correct); # add the odd one out to the pile
 			
+			@printwords = shuffle(@printwords);
 			$question = "Which is the odd one out? <|";
 			
 			my $option;
@@ -223,6 +234,7 @@ while (1) { # infinite loop D:
 		}
 		
 		print $question;
+		debug(1,"{$correct} ");
 		print color "magenta";
 		print ">>>";
 		print color "reset";
