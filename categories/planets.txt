@@ -6,4 +6,3 @@ jupiter
 saturn
 uranus
 neptune
-//

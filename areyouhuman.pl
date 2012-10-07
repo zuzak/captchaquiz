@@ -7,10 +7,13 @@ use List::Util qw(shuffle); # http://www.perlhowto.com/arrange_the_elements_of_a
 # initialise configuration variables and their defaults
 my $numquestions = 5; # number of questions the user is prompted
 my $quota = 4;        # number of questions the user must ask correctly
-my @questiontypes = ("math","alphabet","odd"); # question types used [math alphabet odd]
+my @questiontypes = ("bank","math","alphabet","odd"); #"math","alphabet","odd","bank"); # question types used [math alphabet odd bank]
 my $difficulty = 5; # defines the maximum size of math questions
-
-my $debug = 1; # turn on to view answers(!)
+$| = 0;
+my $debug = 0; # 0 = no echoes
+			   # 1 = show question types and answers
+			   # 2 = show file names etc
+			   # 3 = splurge verbosity
 
 # language variables
 my @plus = ("plus", "added to", "+", "more than");
@@ -18,6 +21,7 @@ my @minus = ("minus", "take", "subtracted by", "less");
 my @times = ("times", "multiplied by", "by");
 my @divide = ("divided by", "divided into", "split between");
 
+$| = 1;
 srand; # may the odds be forever in your favour
 
 if ($numquestions lt $quota) { # check if the config is sane
@@ -27,6 +31,20 @@ if ($numquestions lt $quota) { # check if the config is sane
 sub random() {
 	my $random = int(rand($difficulty)+1);
 	$random;
+}
+
+sub randomFile {
+	my $directory = $_[0];
+	opendir(DIR,$directory);
+	my @files = readdir(DIR);
+	closedir(DIR);
+	my $return = ".";
+	while (substr($return,0,1) eq "."){
+		$return = $files[int(rand(@files))];
+	}
+	debug(3,"\nRandom file! $return selected\n");
+	$return=$directory."/".$return; #prepend dir
+	$return;
 }
 
 sub returnOrdinal {
@@ -65,7 +83,7 @@ sub debug {
 }
 sub fileArray { # sticks all the shizzle in a file into an array
 	my $file = $_[0];
-	debug(2,"\nOpening $file...");
+	debug(3,"\nOpening $file...");
 	my $line = 0;
 	my @dict;
 
@@ -75,7 +93,7 @@ sub fileArray { # sticks all the shizzle in a file into an array
 
 	while ($nextword) {
 		chomp($nextword); # remove \n
-		debug(2,"\nReading $nextword...");
+		debug(3,"\nReading $nextword...");
 		if (substr($nextword,0,2) ne "//") { # comments
 			$dict[$line] = $nextword;
 			$line += 1;
@@ -83,7 +101,7 @@ sub fileArray { # sticks all the shizzle in a file into an array
 		$nextword = <HANDLE>;
 	}
 	close(HANDLE);
-	debug(2,"\n$file closed..");
+	debug(3,"\n$file closed..");
 	@dict;	
 
 }
@@ -93,14 +111,8 @@ print "Hello, please prove that you are not a computer program.\n";
 print "Prove this by correctly answering $quota out of $numquestions correctly.\n\n";
 
 # internal vars
-my $corrans;
-my $correct;
-my $questionnumber;
-my $success;
-my $questiontype;
+my ($corrans, $correct, $questionnumber, $success, $questiontype);
 $corrans = 0;
-
-$|=1; # turn buffers on whilst testing
 
 
 debug(1,"*** DEBUG MODE ON ***\n\n\n"); # announce debug mode if it's on
@@ -111,7 +123,7 @@ while (1) { # infinite loop D:
 	$corrans = 0;
 	while ($questionnumber < $numquestions) {
 		$questionnumber += 1;
-		my $question = "<No question defined!>";
+		my $question;
 		print "Verification question $questionnumber/$numquestions\n";
 
 		$questiontype = $questiontypes[rand(@questiontypes)];
@@ -174,50 +186,36 @@ while (1) { # infinite loop D:
 			$question = "What is the $index$ordinal letter of the alphabet?\n";
 		} elsif ($questiontype eq "odd") {
 			# odd one out	
-			my @categories;
-			opendir(DIR,"categories");
-		
-			@categories = readdir(DIR);
-			closedir(DIR);
-		
 			my $category1 = "foo";
 			my $category2 = "foo";
 			my $allowable = 0;
-			$category1 = $categories[int(rand(@categories))];
-			$category2 = $categories[int(rand(@categories))];
+			$category1 = randomFile("categories");
+			$category2 = randomFile("categories");
 			while ($allowable == 0) {
 				$allowable = 1;
-				debug(2,"1: $category1 | 2: $category2");
+				debug(3,"1: $category1 | 2: $category2");
 				if ($category1 eq $category2) { # impossible question!
 					$allowable = 0;
-					debug(2,"\nSame category");
-					$category1 = $categories[int(rand(@categories))];
-				} elsif(substr($category1,0,1) eq ".") {  # disallow things like . and ..
-					$allowable = 0;
-					debug(2,"\nCat1 is dotfile");
-					$category1 = $categories[int(rand(@categories))];
-				} elsif(substr($category2,0,1) eq ".") { # couldn't get || working properly
-					$allowable = 0;
-					$category2 = $categories[int(rand(@categories))];
-				#debug(1,"\nCat2 is dotfile"
+					debug(3,"\nSame category");
+					$category1 = randomFile("categories");
 				}
-				debug(2,"!");
+				debug(3,"!");
 			}
-			debug(2,"*");
-			my @cat1 = fileArray("categories/".$category1);
-			my @cat2 = fileArray("categories/".$category2);
-			debug(2,"\n C1: @cat1; C2: @cat2");
+			debug(3,"*");
+			my @cat1 = fileArray($category1);
+			my @cat2 = fileArray($category2);
+			debug(3,"\n C1: @cat1; C2: @cat2");
 			my @printwords;
 			
 			my $wordcount = 0;
 			my $allowed = 1;
-			while ($wordcount ne int($difficulty/2)) {
+			while ($wordcount ne int($difficulty/0.75)) {
 				my $word = $cat1[int(rand(@cat1))]; # get random word
 				push(@printwords,$word);
 				$wordcount++;
 			}
 			$correct = $cat2[int(rand(@cat2))];
-			debug(1,"$category1 - $category2");
+			debug(2,"$category1 - $category2");
 			push(@printwords,$correct); # add the odd one out to the pile
 			
 			@printwords = shuffle(@printwords);
@@ -229,6 +227,24 @@ while (1) { # infinite loop D:
 			}
 			$question = $question."> \n";
 			
+		} elsif ($questiontype eq "bank") {
+			my @questions = fileArray(randomFile("questions"));
+			debug(3,"@questions selected");
+			my (@q, @a, $count, $ques);
+			$question = $questions[0];
+			$count = 1;
+			foreach $ques (@questions) {
+				my @currq = split(/\|/, $questions[$count]); # | is the char I've used to split, but it needs escaping
+				$q[$count] = $currq[0];
+				$a[$count] = $currq[1];
+				$count++;
+			}
+				
+			my $randid = int(rand(@q));
+			$question =  $question.$q[$randid]."?\n";
+#			$question = "";
+			
+			$correct  = $a[$randid];
 		} else {
 			die "Invalid question type found; please check your configuration!";
 		}
@@ -248,7 +264,10 @@ while (1) { # infinite loop D:
 			print "  correct\n\n";
 		} else {
 			print color "red";
-			print "incorrect\n\n";
+			print "incorrect\n";
+			
+			debug(2,"          YOU WROTE $input\n");
+			debug(2,"         ANSWER WAS $correct\n\n");
 		}
 		
 		print color "reset";
@@ -270,8 +289,6 @@ while (1) { # infinite loop D:
 		print "\n[$questionnumber asked] [$corrans correct] [$quota required]\n"; # user failed, tell them how
 	}
 
-	$| = 1; # disable output buffering for the progress bar thing
-	
 	print "\n\nRestarting";
 	
 	my $timer;
@@ -280,7 +297,6 @@ while (1) { # infinite loop D:
 		sleep(1);
 	}
 	print "\n\n";
-	$| = 0; # reenable, just in case
 }
 
 die "The end was reached!"; # there's an infinite loop, this should never happen
