@@ -50,31 +50,37 @@ must select the word that is the 'odd one out' in order to answer the question c
 This question type is easily configurable, by editing the contents of the `categories` directory.
 Each text file should contain a list of words or phrases in a category, one on each line:
 
-> Jean-Luc Picard
-> William T. Riker
-> Geordi La Forge
-> Tasha Yar
-> Worf
-> Q
-> Welsey Crusher
+```
+Jean-Luc Picard
+William T. Riker
+Geordi La Forge
+Tasha Yar
+Worf
+Q
+Welsey Crusher
+```
 
 The number of words given to the user to digest is determined from the `$difficulty` variable.
 
 #### bank
 The question bank type reads questions from files in the /question directory.
 The syntax is thus:
-> questionprefix
-> question1|answer1
-> question2|answer2
+
+```
+questionprefix
+question1|answer1
+question2|answer2
+```
 
 For example:
-> What colour is a
-> banana|yellow
-> lemon|yellow
-> cucumber|green
-> aubergine|purple
-> n unripe banana|green
-
+```
+What colour is a
+banana|yellow
+lemon|yellow
+cucumber|green
+ubergine|purple
+n unripe banana|green
+```
 Copyright
 ---------
 > Copyright (c) 2012 Douglas Gardner
