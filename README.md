@@ -11,7 +11,7 @@ correct, the user is determined to be human.
 To end the program, send `^c`.
 
 Dependencies
------------
+------------
 * Requires Switch, which will be removed from the Perl core distribution in the next major release.
 
 Configuration
@@ -48,9 +48,33 @@ The odd one out question type prompts the user with several different words. The
 must select the word that is the 'odd one out' in order to answer the question correctly.
 
 This question type is easily configurable, by editing the contents of the `categories` directory.
-Each text file should contain a list of words in a category, one on each line.
+Each text file should contain a list of words or phrases in a category, one on each line:
+
+> Jean-Luc Picard
+> William T. Riker
+> Geordi La Forge
+> Tasha Yar
+> Worf
+> Q
+> Welsey Crusher
 
 The number of words given to the user to digest is determined from the `$difficulty` variable.
+
+#### bank
+The question bank type reads questions from files in the /question directory.
+The syntax is thus:
+> questionprefix
+> question1|answer1
+> question2|answer2
+
+For example:
+> What colour is a
+> banana|yellow
+> lemon|yellow
+> cucumber|green
+> aubergine|purple
+> n unripe banana|green
+
 Copyright
 ---------
 > Copyright (c) 2012 Douglas Gardner

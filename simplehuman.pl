@@ -6,6 +6,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Switch; 
 
 my @operators = {"+","-","*","/"};
 my $quota = 4;
@@ -13,8 +14,7 @@ my $maxquestions = 5;
 my $difficulty = 10;
 
 my $loop = 1;
-my $questionnumber;
-my $correctanswers;
+my($questionnumber, $correctanswers, $number1, $number2, $correct, $operator);
 
 sub random() {
 	my $random = int(rand($difficulty)+1);
@@ -22,19 +22,19 @@ sub random() {
 }
 
 while ($loop == 1){
-	$questionnumber = 0;
+	$questionnumber = 1;
 	$correctanswers = 0;
 	
-	print "Hello, please prove that you're not a computer program.";
-	print "Prove this by correcly answering $quota out of $maxquestions.";
+	print "Hello, please prove that you're not a computer program.\n";
+	print "Prove this by correcly answering $quota out of $maxquestions.\n\n";
 	
 		while(($questionnumber ne $maxquestions) && ($correctanswers ne $quota)) {
-			my $number1 = random();
-			my $number2 = random();
+			$number1 = random();
+			$number2 = random();
 			
-			my $operator = $operators[rand(@operators)];
+			$operator = $operators[rand(@operators)];
 			
-			switch ($operand) { # there's bound to be a better way to do this
+			switch ($operator) { # there's bound to be a better way to do this
 				case "+" {
 					$correct = $number1 + $number2;
 				}
@@ -52,7 +52,7 @@ while ($loop == 1){
 					die "Unknown operator picked!";
 				}
 			}
-			print "Question $questionnumber: What is $number1$operator$number2?";
+			print "Question $questionnumber: What is $number1 $operator $number2?";
 			
 			my $input = <STDIN>;
 			chomp($input);
