@@ -1,0 +1,7 @@
+rose
+tulip
+dahlia
+daffodil
+buttercup
+hydrangea
+sunflower

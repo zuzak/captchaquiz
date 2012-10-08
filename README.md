@@ -8,7 +8,7 @@ This program attempts to determine if a user is a human or an automated process 
 It does so by asking the user several questions. If a certain number of questions are 
 correct, the user is determined to be human.
 
-To end the program, send `^c`.
+To end the program, send `^c`. To run it, use `perl areyouhuman.pl`. No command line arguments are accepted.
 
 Dependencies
 ------------
@@ -129,9 +129,3 @@ Copyright
 > NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
 > DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 > OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-Attribution that needs to be put somewhere
-------------------------------------------
-
-* [Directory to array](http://forums.devshed.com/perl-programming-6/using-perl-to-list-files-in-a-directory-344889.html)
-* [Random line in file](http://docstore.mik.ua/orelly/perl3/cookbook/ch08_07.htm)
