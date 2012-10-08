@@ -81,6 +81,36 @@ cucumber|green
 ubergine|purple
 n unripe banana|green
 ```
+
+### Variables
+
+It is possible to edit the program's functions by editing a few key variables,
+located near the start of the file.
+
+#### `$numquestions`
+This variable controls the number of questions the user is asked. Setting the variable
+to three will require the user to answer three questions before the program is reset.
+
+#### `$quota`
+This variable defines how many questions the user must answer correctly in order to pass the test.
+Set the quota higher for a more stringent test. `$quota` must not be larger than `$numquestions`.
+
+### `@questiontypes`
+Use this array to determine which question types are used in the test.
+Acceptable options are `math`, `alphabet`, `bank`, and `odd`.
+
+### `$difficulty`
+This variable determines how big the numbers in the sums, and the number of options given in the odd-one-out round.
+
+### `$debug`
+Setting this to anything other than 0 will result in debug mode being enabled.
+Debug 1 will result in answers and question types being printed to the screen.
+Debug 2 will show answers and question types, as well as any file names used when rendering a question.
+Debug 3 will splurge a large amount of information, and is generally not useful.
+
+### Language variables
+It is possible to edit the randomly chosen synonyms for the maths questions, by editing `@plus`, `@minus`, `@times`, and `@divide`.
+
 Copyright
 ---------
 > Copyright (c) 2012 Douglas Gardner
