@@ -1,3 +1,4 @@
+#!/usr/bin/perl
 #	areyouhuman.pl
 #
 # Copyright (c) 2012 Douglas 'zuzak' Gardner
@@ -18,7 +19,6 @@
 #
 #
 #
-#!/usr/bin/perl
 use strict;
 #use warnings;
 use Switch; # http://perldoc.perl.org/Switch.html
